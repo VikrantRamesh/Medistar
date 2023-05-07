@@ -59,9 +59,9 @@ const DoctorDashboard = () => {
             if(response.data.class !== 'doctor'){
                 swal({
                     title:"Only Doctors are allowed!",
-                    icon: "warning",
+                    icon: "warning",    
                 });
-                navigate('/login');
+                navigate('/');
             }else{
             const userId_detail = {userId: response.data.id}
             console.log(userId_detail);

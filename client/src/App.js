@@ -5,6 +5,7 @@ import Signup_page from "./components/signup.jsx";
 import Symptoms from "./components/Symptoms.jsx";
 import Docdash from "./components/docdash.jsx";
 import Appointment from "./components/appointments.jsx";
+import AdminDash from "./components/admindash.jsx";
 import GeneralAppointment from "./components/General_appointments.jsx";
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
@@ -21,6 +22,7 @@ function App() {
                     <Route exact path='/symptoms' element={< Symptoms />}></Route>
                     <Route exact path='/Appointments' element={< Appointment />}></Route>
                     <Route exact path='/general_appointments' element={< GeneralAppointment />}></Route>
+                    <Route exact path='/admindash' element={< AdminDash />}></Route>
                     {/* <Route exact path='/logout' element={< Appointment />}></Route> */}
                     <Route exact path='/docdash' element={< Docdash />}></Route>
                  </Routes>

@@ -20,6 +20,9 @@
     "recharts": "^2.5.0",
     "sweetalert": "^2.1.2",
     "tailwind": "^4.0.0",
+    "tw-elements": "^1.0.0-beta2",
+    "victory": "^36.6.10",
+    "victory-chart": "^36.6.10",
     "web-vitals": "^2.1.4"
   },
   "scripts": {

@@ -24,6 +24,8 @@ const Login_page = () => {
                 console.log(response.data.class)
                 if(response.data.class === 'doctor'){
                     navigate('/docdash');
+                }else if(response.data.class === 'admin'){
+                    navigate('/admindash');
                 }else{
                   navigate('/');
                 }
