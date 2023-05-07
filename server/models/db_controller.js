@@ -114,6 +114,16 @@ module.exports.doctor_signup = async function (user_id,fname, lname,email, dob, 
   console.log(query);
 };
 
+
+module.exports.admin_signup = async function (user_id, callback) {
+  var query =
+    "INSERT INTO `admin`(`user_id`) VALUES (" +
+    user_id +
+    ")";
+  con.query(query, callback);
+  console.log(query);
+};
+
 module.exports.login = async function (username, password, callback) {
     con.query('select * from users where username = ? and password = ?' , [username, password], function(error , results , fields){
     if(results){

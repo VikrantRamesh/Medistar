@@ -107,6 +107,10 @@ app.post("/admin_signup", async (req, res) =>{
             req.body.password,
             req.body.class
         ).then(() => process.exit());  
+
+    db_control.admin_signup(
+        primaryKey
+    );
 });
 
 
@@ -190,6 +194,23 @@ app.post("/get_doctor_id", async (req, res) =>{
       });
 });
 
+app.post("/get_admin_id", async (req, res) =>{
+    
+    con.query('select a.admin_id from admin a where a.user_id = ?' , [req.body.userId], function(error , results , fields){
+        if(results){
+            if (results.length > 0){
+                return res.json({admin_id: results[0].admin_id});
+            }else{
+              res.json({login: false})
+            }
+        }
+        else{
+            res.json({login: false})
+        }
+      });
+});
+
+
 app.post("/get_doc_details", async (req, res) =>{
     con.query('select * from doctor d where d.doc_id = ?' , [req.body.doc_id], function(error , results , fields){
         
@@ -215,6 +236,30 @@ app.post("/get_doc_details", async (req, res) =>{
                 phone: phone,
                 dept: dept,
                 qual: qual
+                });
+            }else{
+              return res.json({login: false})
+            }
+        }
+        else{
+            return res.json({login: false})
+        }
+      });
+});
+
+
+app.post("/get_admin_details", async (req, res) =>{
+    con.query('select * from users u where u.id = ?' , [req.body.user_id], function(error , results , fields){
+        
+        if(results){
+            if (results.length > 0){
+                
+                const user_name = results[0].username;
+                const email = results[0].email;
+
+                return res.json({
+                    user_name:user_name,
+                    email:email,
                 });
             }else{
               return res.json({login: false})
