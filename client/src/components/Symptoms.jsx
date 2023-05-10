@@ -36,23 +36,23 @@ function AppointmentForm() {
 
   useEffect(() => {
 
-    // Axios.get('http://localhost:5000/protected', { withCredentials: true }).then((response)=>{
-    //   if(response.data.class != 'patient'){
-    //       swal({
-    //           title:"Only Patients are allowed to make appointments!",
-    //           icon: "warning",
-    //       });
-    //       navigate("/");
-    //   }else{
-    //     const userId_detail = {userId: response.data.id}
-    //     Axios.post('http://localhost:5000/get_patient_id', userId_detail).then((response)=>{
-    //             console.log(response.data.p_fname,response.data.pid);
-    //     });
-    //   }
-    //   }).catch(error => {
-    //       console.log(error);
-    //       navigate('/login');
-    //   });
+     Axios.get('http://localhost:5000/protected', { withCredentials: true }).then((response)=>{
+       if(response.data.class != 'patient'){
+           swal({
+               title:"Only Patients are allowed to make appointments!",
+               icon: "warning",
+           });
+           navigate("/");
+       }else{
+         const userId_detail = {userId: response.data.id}
+         Axios.post('http://localhost:5000/get_patient_id', userId_detail).then((response)=>{
+                console.log(response.data.p_fname,response.data.pid);
+         });
+       }
+       }).catch(error => {
+           console.log(error);
+           navigate('/login');
+       });
 
 
       Axios.post('http://localhost:5000/get_symptoms').then((response)=>{
@@ -91,7 +91,7 @@ function AppointmentForm() {
         <div className=" signup-container flex-col text-lg">
             <form onSubmit={handleSubmit}>
               <h2 className="text-center text-white font-bold text-4xl py-8 px-8 ">Symptoms:</h2>
-              <div className="grid grid-cols-3 gap-4 content-center rounded-lg bg-purple-500 hover:scale-110 transition-all duration-300 p-4 ">
+              <div className="grid grid-cols-3 gap-4 content-center rounded-lg bg-purple-200 hover:scale-110 transition-all duration-300 p-4 ">
                     {options.map((option) => (
                       <label key={option.value} className="block ml-20">
                         <input
@@ -107,7 +107,7 @@ function AppointmentForm() {
                     ))}
                 </div>
 
-                <button className="w-2/5 mx-auto my-10 py-2px-4 py-2 rounded-lg bg-blue-500 hover:bg-gradient-to-r from-pink-200 to-pink-500 hover:to-pink-500 hover:text-slate-900 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-3 text-white hover:opacity-75 transition-colors duration-30 hover:scale-110 transition-all duration-300" type="submit">Check Condition</button>
+                <button className="  bg-blue-300 w-1/3 mx-auto my-10 py-2 px-4 py-2 rounded hover:bg-gradient-to-r from-pink-200 to-pink-500 hover:to-pink-500 hover:text-slate-900 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-3 text-white hover:opacity-75 transition-colors duration-30 hover:scale-110 transition-all duration-300" type="submit">Check Condition</button>
             </form>  
         </div>
     </div>
