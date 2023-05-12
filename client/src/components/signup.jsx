@@ -3,6 +3,7 @@ import '../styles/signup.css';
 import Axios from "axios";
 import swal from 'sweetalert';
 import {useNavigate, Link} from 'react-router-dom';
+import InteractiveBackground from "./InteractBg";
 
 
 const Signup_page = () => {
@@ -154,8 +155,33 @@ const Signup_page = () => {
       case "admin":
         return (
 
-            <div className="signup-form mx-auto bg-transparent max-w-xl	">
-                    <h2>Admin Signup</h2>
+        <div className="signup-form mx-auto max-w-xl	bg-cyan-400  bg-opacity-90 shadow-2xl">
+
+            
+                <div className='flex flex-row'>
+                    <div className='mb-5 '>
+                        <button
+                        className="bg-white flex items-center justify-center w-10 h-10 rounded-full shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                        onClick={() => window.history.back()}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-black"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                        </button>
+                        </div>
+                        <h2 className='font-bold mb-5 p-0 ml-24'>Admin Signup</h2>
+                    </div>
                     <form onSubmit={handleAdminSubmit}>
 
                     <div className="form-group w-10/12 mx-auto">
@@ -174,7 +200,7 @@ const Signup_page = () => {
                         <label>Secret Admin Key</label>
                         <input type="password" value={adminKey} onChange={(e) => setAdminKey(e.target.value)} required />
                     </div>
-                    <button  disabled={isDisabledAdmin} className="w-2/5 mx-auto my-10 next" type="submit" >Signup</button>
+                    <button  disabled={isDisabledAdmin} className="w-2/5 mx-auto my-10 next transition-all duration-500" type="submit" >Signup</button>
                     </form>
                     <p className='form-group w-10/12 mx-auto text-l font-semibold text-center'>
                         Have an account? <Link to="/login" ><a className='underline decoration-indigo-500 decoration-2'>Login</a></Link>
@@ -187,8 +213,31 @@ const Signup_page = () => {
         <div className="">
             
             {doctorPage === 1?(
-            <div className="signup-form mx-auto max-w-xl">
-            <h2>Doctor Signup</h2>
+            <div className="signup-form mx-auto max-w-xl bg-cyan-400  bg-opacity-90 shadow-2xl">
+            <div className='flex flex-row'>
+                    <div className='mb-5 '>
+                        <button
+                        className="bg-white flex items-center justify-center w-10 h-10 rounded-full shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                        onClick={() => window.history.back()}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-black"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                        </button>
+                        </div>
+                        <h2 className='font-bold mb-5 p-0 ml-24'>Doctor Signup</h2>
+                    </div>
             <form>
 
             <div className="form-group w-10/12 mx-auto">
@@ -210,7 +259,7 @@ const Signup_page = () => {
             </form>
         </div>
             ):(
-            <div className=' signup-form mx-auto max-w-4xl'>
+            <div className=' signup-form mx-auto max-w-4xl bg-cyan-400  bg-opacity-90 shadow-2xl'>
             <h2>Doctor Signup</h2>
             <h1 className='justify-center mx-auto text-center'>Personal Details</h1>
             <form onSubmit={handleDoctorSubmit}>
@@ -281,7 +330,7 @@ const Signup_page = () => {
                 </div>
                 <div className='grid grid-cols-2'>
                     <button className="w-4/5 mx-auto my-10 next" onClick={(e)=> setDoctorPage(1)}>Previous</button>
-                    <button className="w-4/5 mx-auto my-10" type="submit">Signup</button>
+                    <button className="w-4/5 mx-auto my-10 transition-all duration-500" type="submit">Signup</button>
                 </div>
                 
             
@@ -295,8 +344,31 @@ const Signup_page = () => {
         <div className="">
             
             {patientPage === 1?(
-            <div className=' signup-form mx-auto max-w-xl'>
-            <h2>Patient Signup</h2>
+            <div className=' signup-form mx-auto max-w-xl bg-cyan-400  bg-opacity-90 shadow-2xl'>
+            <div className='flex flex-row'>
+                    <div className='mb-5 '>
+                        <button
+                        className="bg-white flex items-center justify-center w-10 h-10 rounded-full shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                        onClick={() => window.history.back()}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-black"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                        </button>
+                        </div>
+                        <h2 className='font-bold mb-5 p-0 ml-24'>Patient Signup</h2>
+                    </div>
             <form>
                 <h1 className='justify-center mx-auto text-center'>Login Details</h1>
                 <div className="form-group w-10/12 mx-auto">
@@ -318,7 +390,7 @@ const Signup_page = () => {
             </form>
             </div>
             ):(
-            <div className=' signup-form mx-auto max-w-4xl'>
+            <div className=' signup-form mx-auto max-w-4xl bg-cyan-400  bg-opacity-90 shadow-2xl'>
             <h2>Patient Signup</h2>
             <h1 className='justify-center mx-auto text-center'>Personal Details</h1>
             <form onSubmit={handlePatientSubmit}>
@@ -365,7 +437,7 @@ const Signup_page = () => {
                 </div>
                 <div className='grid grid-cols-2'>
                     <button className="w-4/5 mx-auto my-10 next" onClick={(e)=> setPatientPage(1)}>Previous</button>
-                    <button className="w-4/5 mx-auto my-10" type="submit">Signup</button>
+                    <button className="w-4/5 mx-auto my-10 transition-all duration-500" type="submit">Signup</button>
                 </div>
                 
             
@@ -386,31 +458,33 @@ const Signup_page = () => {
   
 
   return (
-    <div className='bg-gradient-to-r from-cyan-500 to-blue-500 min-h-full'>
+    <div className='min-h-full'>
+        <InteractiveBackground/>
+    <div className="absolute top-0 left-0 z-10 w-full h-full mb-10">      
         <div className=" signup-container flex-col text-lg">
-            <div className="signup-options grid-cols-3 mx-auto mb-6 mt-12">
+            <div className="signup-options grid-cols-3 mx-auto mb-6 mt-6">
                 <button
                 className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-yellow-500 text-white font-bold py-2 px-4   focus:from-green-500 focus:to-blue-500 rounded mx-2"
                 onClick={() => handleFormSelection("admin")
                 }
                 >
-                Admin Login
+                Admin Signup
                 </button>
                 <button
                 className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-yellow-500 text-white font-bold py-2 px-4   focus:from-green-500 focus:to-blue-500 rounded mx-2"
                 onClick={() => handleFormSelection("doctor")}
                 >
-                Doctor Login
+                Doctor Signup
                 </button>
                 <button
                 className="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 hover:from-pink-500 hover:to-yellow-500 text-white font-bold py-2 px-4  focus:from-green-500 focus:to-blue-500 rounded mx-2"
                 onClick={() => handleFormSelection("patient")}
                 >
-                Patient Login
+                Patient Signup
                 </button>
             </div>
             <div>{renderLoginForm(selectedForm)}</div> 
-            
+            </div>
         </div>
     </div>
   );

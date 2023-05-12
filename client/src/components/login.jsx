@@ -3,6 +3,7 @@ import '../styles/signup.css';
 import Axios from "axios";
 import swal from 'sweetalert';
 import {useNavigate, Link} from 'react-router-dom';
+import InteractiveBackground from "./InteractBg";
 
 const Login_page = () => {
   const [userName, setUserName] = useState('');
@@ -10,7 +11,7 @@ const Login_page = () => {
 
   const isDisabled = !password || !userName;
 
-  const navigate = useNavigate();
+  const navigate = useNavigate(); 
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -38,26 +39,58 @@ const Login_page = () => {
     });
   };
 
+  const handleClick = () =>{
+    navigate('/');
+  }
+
   return (
-    <div className='bg-gradient-to-r from-cyan-500 to-blue-500 pt-36 pb-32 py-auto min-h-full'>
-        <div className=" signup-container flex-col text-lg"></div>
-          <div className="signup-form mx-auto bg-transparent max-w-xl	">
-              <h2>Login</h2>
+    <div className=' pt-36 pb-32 py-auto min-h-full'>
+       <InteractiveBackground/>
+       <div className="absolute top-0 left-0 z-10 w-full h-full mt-36">  
+        <div className=" signup-container  flex-col text-lg"></div>
+        
+          <div className="login-form mx-auto bg-cyan-400  bg-opacity-90 shadow-2xl max-w-xl">
+              <div className='flex flex-row'>
+                    <div className='mb-5 '>
+                        <button
+                        className="bg-white text-black flex items-center justify-center w-10 h-10 rounded-full shadow-md hover:shadow-lg hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-white"
+                        onClick={handleClick}
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            className="h-6 w-6 text-black"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                          >
+                                <path
+                                  strokeLinecap="round"
+                                  strokeLinejoin="round"
+                                  strokeWidth={2}
+                                  d="M15 19l-7-7 7-7"
+                                />
+                            </svg>
+                        </button>
+                    </div>
+                <h2 className='font-bold mb-5 p-0 ml-44'>Login</h2>
+              </div>
+
               <form onSubmit={handleSubmit}>
-                      <div className="form-group w-10/12 mx-auto">
+                      <div className="form-group w-10/12 mx-auto text-lg">
                           <label>Username</label>
                           <input type="text" value={userName} onChange={(e) => setUserName(e.target.value)} required />
                       </div>
-                      <div className="form-group w-10/12 mx-auto">
+                      <div className="form-group w-10/12 mx-auto text-lg">
                           <label>Password</label>
                           <input type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
                       </div>
-                      <button  disabled={isDisabled} className="w-2/5 mx-auto my-10 next" type="submit">Login</button>
+                      <button  disabled={isDisabled} className="w-2/5 mx-auto my-10 next font-black transition-all duration-500" type="submit">Login</button>
                       <p className='form-group w-10/12 mx-auto text-l font-semibold text-center'>
                         Dont have an account? <Link to="/signup" ><a className='underline decoration-indigo-500 decoration-2'>Signup</a></Link>
                       </p>
               </form>
-        </div>
+          </div>
+      </div>
      </div>
   );
 };

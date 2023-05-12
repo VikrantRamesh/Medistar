@@ -5,6 +5,7 @@ import swal from 'sweetalert';
 import {useNavigate, Link } from 'react-router-dom';
 import Nav from './nav.jsx';
 
+
 import Select from "react-select";
 import { Fragment } from "react";
 import { FormLabel, FormInput } from "@tailwindcss/forms";
@@ -26,7 +27,7 @@ function AppointmentForm() {
     const checked = event.target.checked;
 
     setIsChecked(event.target.checked);
-  
+
     if (checked) {
       setSelectedOptions((prev) => [...prev, value]);
     } else {
@@ -60,7 +61,7 @@ function AppointmentForm() {
           setOptions(response.data.symptoms);
       });
   }, []);
-  
+
 
 
   const handleSubmit = async (event) => {
@@ -85,32 +86,38 @@ function AppointmentForm() {
 
 
   return (
-    
-    <div className='bg-gradient-to-t from-gray-900 via-violet-400 to-purple-700 min-h-full'>
-        <Nav/>  
-        <div className=" signup-container flex-col text-lg">
+
+    <div className='bg-violet-400  min-h-full'>
+            
+        <Nav />
+
+        <div className="signup-container flex-col text-xl" >
             <form onSubmit={handleSubmit}>
-              <h2 className="text-center text-white font-bold text-4xl py-8 px-8 ">Symptoms:</h2>
-              <div className="grid grid-cols-3 gap-4 content-center rounded-lg bg-purple-200 hover:scale-110 transition-all duration-300 p-4 ">
-                    {options.map((option) => (
-                      <label key={option.value} className="block ml-20">
-                        <input
-                          multiple={true}
-                          type="checkbox"
-                          value={option.value}
-                          checked={selectedOptions.includes(option.value)}
-                          onChange={handleChange}
-                          className="form-checkbox h-5 w-5 text-indigo-600 transition duration-150 ease-in-out  mx-auto"
-                        />
-                        <span className="ml-2 text-white">{option.label}</span>
-                      </label>
-                    ))}
+              
+              <div className="content-center rounded-lg bg-slate-100 duration-300 p-4 py-10 shadow-2xl my-20 bg-opacity-80">
+                  <h2 className="text-center text-slate-800 font-bold text-4xl py-8 px-8 ">Symptoms:</h2>
+                    <div className="grid grid-cols-3 gap-4 ">
+                        {options.map((option) => (
+                          <label key={option.value} className="block ml-20 text-slate-600 ">
+                            <input
+                              multiple={true}
+                              type="checkbox"
+                              value={option.value}
+                              checked={selectedOptions.includes(option.value)}
+                              onChange={handleChange}
+                              className="form-checkbox h-5 w-5 text-slate-600 transition duration-150 ease-in-out  mx-auto"
+                            />
+                            <span className="ml-2 text-slate-600 ">{option.label}</span>
+                          </label>
+                        ))}
+                    </div>
                 </div>
 
-                <button className="  bg-blue-300 w-1/3 mx-auto my-10 py-2 px-4 py-2 rounded hover:bg-gradient-to-r from-pink-200 to-pink-500 hover:to-pink-500 hover:text-slate-900 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-3 text-white hover:opacity-75 transition-colors duration-30 hover:scale-110 transition-all duration-300" type="submit">Check Condition</button>
-            </form>  
+                <button className="bg-blue-300  text-white w-1/3 mx-auto my-2 px-4 py-2 rounded-2xl  hover:text-white font-bold  hover:scale-110 transition-all duration-300 hover:bg-emerald-700" type="submit">Check Condition</button>
+            </form>
         </div>
-    </div>
+      </div>
+    
   );
 }
 

@@ -1,28 +1,19 @@
-import React, { useState, useEffect,PureComponent } from "react";
+import React, { useState, useEffect } from "react";
 import '../styles/signup.css';
 import Axios from "axios";
 import swal from 'sweetalert';
 import {useNavigate, useLocation } from 'react-router-dom';
 import Nav from './dashNav.jsx'; 
-import { ThemeContext, themes } from '../contexts/ThemeContext';
-import {VictoryPie} from 'victory';
-
-
-
-const StatisticBox = ({ title, number }) => {
-    return (
-        <div className="flex-1 m-2 rounded-lg overflow-hidden shadow-lg cursor-pointer transform hover:scale-110 transition duration-500 ease-in-out">
-            <div className="bg-gradient-to-r from-green-400 to-blue-500 hover:from-purple-400 hover:to-pink-500 p-6">
-            <div className="flex flex-col items-center">
-                <div className="text-white text-4xl font-bold mb-2">
-                {number}
-                </div>
-                <div className="text-white text-lg">{title}</div>
-            </div>
-            </div>
-        </div>
-    );
-};
+import classNames from "classnames";
+import { Bar, Pie, Line, Doughnut, Gauge} from 'react-chartjs-2';
+import Chart from "chart.js/auto";
+import GenderGaugeChart from "./Admin_components/GaugeChart.jsx";
+import WavyChart from "./Admin_components/wavyChart.jsx";
+import DoctorsList from "./Admin_components/DoctorPanel.jsx"
+import StatisticBox from './Admin_components/staticBox'
+import DoughnutChart from "./Admin_components/DoughnutChart";
+import LineChart from "./Admin_components/LineChart";
+import BarGraph from "./Admin_components/bargraph";
 
 const AdminDashboard = () => {
   const [adminid, SetAdminid] = useState("");
@@ -31,32 +22,34 @@ const AdminDashboard = () => {
                                                 email: "" 
                                                 });
   const [userId, setUserId] = useState("");
+  const[theme, setTheme] = useState(localStorage.theme);
+  const[webStats, setWebStats] = useState({
+                                    doctors:0,
+                                    admins:0,
+                                    patients:0,
+                                    total:0,
+                                });
+  const[dept_app, setDept_app] = useState(null);
+  const[time_app, setTime_app] = useState(null);
+  const[genderRatio, setGenderRatio] = useState(null);
+  const[ageData, setAgeData] = useState(null);
+  const[topDocs,setTopDocs] = useState(null);
+  const[disease_data,setDisease_data] = useState(null);
 
-  const defaultGraphicData = [{ x: "Cats", y: 30 },
-                                { x: "Dogs", y: 30 },
-                                { x: "Birds", y: 30 }];
-  const [graphicData, setGraphicData] = useState(defaultGraphicData);
-  
-  //theme useState
-  const [theme, setTheme] = useState(themes.dark);
+  //const [appointmentData, setAppointmentData] = useState({});
 
 
-  const data=[
-    { x: "Cats", y: 35 },
-    { x: "Dogs", y: 40 },
-    { x: "Birds", y: 55 }
-  ];           
-  
-  
 
-  useEffect(() => {
-    setGraphicData(data); // Setting the data that we want to display
-  }, []);
+
+  const handleDarkModeChange = (darkMode) => {
+    setTheme(darkMode);
+  };
+
 
   const navigate = useNavigate();
 
   useEffect(() => {
-
+    //user Authentication
     Axios.get('http://localhost:5000/protected', { withCredentials: true }).then((response)=>{
             setUserId(response.data.id);
             if(response.data.class !== 'admin'){
@@ -69,7 +62,6 @@ const AdminDashboard = () => {
             const userId_detail = {userId: response.data.id}
             console.log(userId_detail);
             Axios.post('http://localhost:5000/get_admin_id', userId_detail).then((response2)=>{
-                    //console.log(response.data.d_fname,response.data.doc_id);
                     SetAdminid(response2.data.admin_id);    
                     set_admin_details(response.data.id);
             });
@@ -79,8 +71,53 @@ const AdminDashboard = () => {
             console.log(error);
             navigate('/login');
         });
+    
+    //Get Website Stats
+    Axios.post('http://localhost:5000/get_website_stats').then((response)=>{
+           setWebStats(response.data);
+    });  
+    
+    //Get department data of appointments
+    Axios.post('http://localhost:5000/dept_appointment_data').then((response)=>{
+          setDept_app(response.data);
+    });  
+    
+    //Get time data of appointments
+    Axios.post('http://localhost:5000/time_appointment_data').then((response)=>{
+          setTime_app(response.data);
+    });  
 
-    }, []);
+    //Get gender data of patients
+    Axios.post('http://localhost:5000/gender_data').then((response)=>{
+          setGenderRatio({"Male":response.data.Male/response.data.total,
+                       "Female":response.data.Female/response.data.total,
+                       "Other":response.data.Other/response.data.total});
+    });  
+
+    //Get age data of patients
+    Axios.post('http://localhost:5000/age_data').then((response)=>{
+          setAgeData(response.data);
+    });  
+
+    //Get age data of patients
+    Axios.post('http://localhost:5000/top_docs').then((response)=>{
+        setTopDocs(response.data.doctors); 
+    });  
+    //Get age data of Diseases
+    Axios.post('http://localhost:5000/top_diseases').then((response)=>{
+        setDisease_data(response.data.diseases);        
+    });  
+
+  }, []);
+                                           
+                                        
+
+
+  
+
+
+
+
     
 
     const set_admin_details = (user_id) =>{
@@ -90,75 +127,121 @@ const AdminDashboard = () => {
         });
     }
 
+    const canvasClass = classNames(
+        "rounded-full",
+        "py-2",
+        "px-4",
+        "text-white",
+    );
+
 
   return (
-    <div className="bg-slate-900 min-h-full">
-            <Nav></Nav>
-            <div className="grid grid-cols-6 ">
-                <div className="bg-slate-700 ml-6 mr-2 px-12 pt-6 mt-5 rounded-xl col-span-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300">
-                    <h2 className="text-white font-extrabold subpixel-antialiased text-lg pb-3 mx-auto text-center">Admin Details</h2>
+    <div className="dark:bg-slate-900 bg-slate-300 transition-all h-min-screen duration-500 pb-5">
+            <Nav onDarkModeChange={handleDarkModeChange} ></Nav>
+
+            <div className="grid lg:grid-cols-6 gap-2 transition-all duration-1000 mx-2">
+                <div  className={`bg-slate-50 shadow-xl lg:dark:bg-slate-700 ml-2 px-12 pt-6 rounded-lg col-span-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 transition-all duration-1000`}>
+                    
+                    <h2 className="text-slate-800 dark:text-white font-extrabold subpixel-antialiased text-lg pb-3 mx-auto text-center  transition-all duration-1000">Admin Details</h2>
                         <div className="px-auto">
                                 <tr>
-                                    <td className="text-md text-white font-semibold py-1 px-1">User ID:</td>
-                                    <td className="text-md text-slate-400 py-1 px-4">{userId}</td>
+                                    <td className="text-md text-slate-800 dark:text-white font-semibold py-1 px-1">User ID:</td>
+                                    <td className="text-md dark:text-slate-400 text-slate-500 font-bold py-1 px-4">{userId}</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-md text-white font-semibold py-1 px-1">Admin ID:</td>
-                                    <td className="text-md text-slate-400 py-1 px-4">{adminid}</td>
+                                    <td className="text-md text-slate-800 dark:text-white font-semibold py-1 px-1">Admin ID:</td>
+                                    <td className="text-md  dark:text-slate-400 text-slate-500 font-bold py-1 px-4">{adminid}</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-md text-white font-semibold py-1 px-1">User Name:</td>
-                                    <td className="text-md text-slate-400 py-1 px-4">{adminDetails.user_name}</td>
+                                    <td className="text-md text-slate-800 dark:text-white font-semibold py-1 px-1">User Name:</td>
+                                    <td className="text-md dark:text-slate-400 text-slate-500 font-bold py-1 px-4">{adminDetails.user_name}</td>
                                 </tr>
                                 <tr>
-                                    <td className="text-md text-white font-semibold py-1 px-1">Email:</td>
-                                    <td className="text-md text-slate-400 py-1 px-4">{adminDetails.email}</td>
+                                    <td className="text-md text-slate-800 dark:text-white font-semibold py-1 px-1">Email:</td>
+                                    <td className="text-md dark:text-slate-400 text-slate-500 font-bold py-1 px-4">{adminDetails.email}</td>
                                 </tr>
                         </div>
                 </div>
-                <div className="bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-cyan-500 via-purple-300 to-cyan-500 px-10 py-5 mr-6 mt-5    rounded-xl col-span-4 max-h-96 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300">
-                    <h2 className="text-slate-800 font-extrabold subpixel-antialiased text-xl pb-3 mx-auto text-center">WEBSITE'S STATISTICS</h2>
+                <div className={`bg-slate-50 shadow-xl px-10 py-5 mr-2 lg:dark:bg-slate-700   rounded-lg col-span-4 max-h-96 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 transition-all duration-1000`}>
+                    <h2 className="text-slate-800 font-extrabold subpixel-antialiased text-xl pb-3 mx-auto text-center dark:text-white">WEBSITE'S STATISTICS</h2>
                     <div className="flex flex-row justify-center">
-                        <StatisticBox title="Users" number={1024} />
-                        <StatisticBox title="Patients" number={256} />
-                        <StatisticBox title="Doctors" number={64} />
-                        <StatisticBox title="Admins" number={8} />
+                        <StatisticBox title="Users" number={webStats.total} />
+                        <StatisticBox title="Patients" number={webStats.patients} />
+                        <StatisticBox title="Doctors" number={webStats.doctors} />
+                        <StatisticBox title="Admins" number={webStats.admins} />    
                     </div>
                 </div>
-                <div className="bg-[conic-gradient(at_top_right,_var(--tw-gradient-stops))] from-cyan-500 via-purple-300 to-cyan-500 ml-6 mr-2 px-12 pt-6 mt-5   rounded-xl col-span-4 max-h-96 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300">
-                    <h2 className="text-slate-800 font-extrabold subpixel-antialiased text-xl pb-3 mx-auto text-center">WEBSITE'S STATISTICS</h2>
-                    <div className="grid grid-cols-2">
-                        <div>
-                            <VictoryPie
-                                data={graphicData}
-                                labelRadius={({ innerRadius }) => innerRadius + 5 }
-                                radius={({ datum }) => 5 + datum.y *2}
-                                innerRadius={50}
-                                colorScale={["#69D1C5", "#F44336", "#E91E63", "#9C27B0", "#673AB7"]}
-                                style={{ labels: { fill: "black", fontSize: 20, fontWeight: "bold" } }}
-                                className = "max-h-14"
-                                height={250}
-                                width = {500}
-                                animate={{ easing: 'exp', duration: 2000 }}
-                            />
+                <div className = {`bg-slate-50 shadow-xl ml-2 pt-6 min-h-full  rounded-lg col-span-4  overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:bg-slate-700 transition-all duration-1000`} >
+                    <h2 className="text-slate-800 font-extrabold subpixel-antialiased text-xl pb-3 mx-auto text-center  dark:text-white">TODAY'S APPOINTMENTS</h2>
+                    <div className="grid grid-cols-2" id = 'mychart'>
+                        <div className="  mx-auto py-5">
+                                {dept_app ? (
+                                    <DoughnutChart data={dept_app} theme={theme}/>
+                                ):(
+                                    
+                                    // Show loading message until data arrives
+                                    <p>Loading data...</p>
+                                )}
                         </div>
-                        <div>
-                            <VictoryPie
-                                data={graphicData}
-                                labelRadius={({ innerRadius }) => innerRadius + 5 }
-                                radius={({ datum }) => 5 + datum.y *2}
-                                innerRadius={20}
-                                colorScale={["#69D1C5", "#F44336", "#E91E63", "#9C27B0", "#673AB7"]}
-                                style={{ labels: { fill: "white", fontSize: 20, fontWeight: "bold" } }}
-                                className = "max-h-14"
-                                height={250}
-                                width = {500}
-                                animate={{ easing: 'exp', duration: 2000 }}
-                            />
+                        <div  className="h-72 w-11/12 mx-auto py-5">
+                                {time_app ? (    
+                                    <LineChart Linedata = {time_app} theme={theme}/>
+                                ):(
+                                
+                                    // Show loading message until data arrives
+                                    <p>Loading data...</p>
+                                )}
                         </div>
                     </div>
                 </div>
-                    
+
+                <div className = {`bg-slate-50 shadow-xl  mr-2 pt-6 px-2  row-span-2 rounded-lg col-span-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:bg-slate-700 transition-all duration-1000`}>
+                    <h2 className="text-slate-800 font-extrabold subpixel-antialiased text-xl pb-1 mx-auto text-center dark:text-white">PATIENT STATISTICS</h2>
+                        {genderRatio ? (    
+                                    <GenderGaugeChart
+                                    malePercent={genderRatio.Male}
+                                    femalePercent={genderRatio.Female}
+                                    otherPercent={genderRatio.Other}
+                                    theme={theme}
+                                />
+                        ):(
+                                // Show loading message until data arrives
+                                <p>Loading data...</p>
+                        )}
+
+                        {ageData ? (    
+                                    <WavyChart ageData = {ageData} theme={theme}/>
+                        ):(
+                                // Show loading message until data arrives
+                                <p>Loading data...</p>
+                        )}
+                        
+                </div>
+                <div className = {`bg-slate-50 shadow-xl  ml-2 pt-4 px-2  rounded-lg col-span-4 row-span-2 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:bg-slate-700 transition-all duration-1000`}>
+                    <h2 className="text-slate-800 font-extrabold subpixel-antialiased text-xl mx-auto text-center dark:text-white">TODAY'S BEST DOCTORS</h2>
+                    {topDocs?(
+                        <div className="grid grid-cols-3">
+                            {topDocs.map(doctor => (
+                                <DoctorsList data={doctor}/>
+                            ))}
+                        </div>
+                    ):(
+                        // Show loading message until data arrives
+                        <p>Loading data...</p>
+                    )}
+                </div>
+                <div className = {`bg-slate-50 shadow-xl  mr-2 pt-6 px-2 min-h-full  rounded-lg col-span-2 row-span-1 overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 dark:bg-slate-700 transition-all duration-1000`}>
+                    <h2 className="text-slate-800 font-extrabold subpixel-antialiased text-xl pb-1 mx-auto text-center dark:text-white">DISEASE STATISTICS</h2>
+                    {disease_data?(    
+                        <BarGraph disease_data = {disease_data} theme={theme}/>
+                    ):(
+                        // Show loading message until data arrives
+                        <p>Loading data...</p>
+                    )}
+
+                </div>
+
+
             </div>
     </div>
   );

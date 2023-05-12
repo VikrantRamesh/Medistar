@@ -7,23 +7,43 @@ import Nav from './nav.jsx';
 import gen from "../Images/general_docimg.jpg";
 
 const Doctor = ({ id, fname, lname, qualification, department, appointments, setAppointments ,patId, userId, p_fname}) => {
-  
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [imageUrl, setImageUrl] = useState('');
+  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+  const [TimeSlots, setTimeSlots] = useState(['10:00 AM','11:00 AM', '12:00 PM', '01:00 PM','02:00 PM', '03:00 PM', '04:00 PM','05:00 PM']);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setCurrentTime(new Date());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
 
   const handleAppointment = (event) => {
     event.preventDefault();
     if (selectedDate && selectedTime) {
 
       const appointment_details = {date : selectedDate, time:selectedTime,  doc_id: selectedDoctorId, pfname: p_fname, pid: patId, doc_name: fname, department:department};
-
-      Axios.post('http://localhost:5000/appointment', appointment_details).then((response) => {
-          swal({
-            title:"Appointment Confirmed!",
-            icon: "success",
-          });
+      const doc_detils = {date : selectedDate, time:selectedTime,  doc_id: selectedDoctorId};
+      Axios.post('http://localhost:5000/get_doctor_appointments', appointment_details).then((response) => {
+        if(response.data.count>=3){
+            swal({
+              title:"Slot Full!",
+              icon: "warning",
+            });
+        }else{
+          Axios.post('http://localhost:5000/appointment', appointment_details).then((response) => {
+            swal({
+              title:"Appointment Confirmed!",
+              icon: "success",
+            });
+        });
+        }
       });
+      
 
       const newAppointment = { date: selectedDate, time: selectedTime };
       console.log("Appointment scheduled for Doctor ID: " + selectedDoctorId);
@@ -35,7 +55,8 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
     }
   };
 
-  const [selectedDoctorId, setSelectedDoctorId] = useState(null);
+
+  const timeOptions = {'10:00 AM':0, '11:00 AM':1, '12:00 PM':2, '01:00 PM':3, '02:00 PM':4, '03:00 PM':5, '04:00 PM':6, '05:00 PM':7};
 
   const handleDoctorClick = (doctorId) => {
     // If the clicked doctor is already selected, deselect it
@@ -51,18 +72,60 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
   };
 
     const get_image = () =>{
-      console.log("doc_id", id);
       const id_data = {user_id: id};
       Axios.post('http://localhost:5000/get_images', id_data, { responseType: 'blob' }).then((response) => {
-          console.log(id, response.data)
           if(response.data.size){
-            setImageUrl(URL.createObjectURL(response.data));
+              setImageUrl(URL.createObjectURL(response.data));
           }else{
-              console.log(id);
               setImageUrl(gen);
           }
     });
   }
+
+
+  //Check if currently selected date and time are beyond current time
+  useEffect(() =>{
+
+    const currentYear = currentTime.getFullYear();
+    let currentMonth = currentTime.getMonth()+1;
+    currentMonth = ("0" + currentMonth).slice(-2);
+    const currentDay = currentTime.getDate();
+
+    const curr_date =  currentYear + "-" + currentMonth + "-" + currentDay;
+
+    const railwayHours = currentTime.getHours();
+    let hours = railwayHours > 12 ? railwayHours - 12 : railwayHours;
+    hours = ("0" + hours).slice(-2);
+    const amPm = railwayHours >= 12 ? "PM" : "AM";
+    hours = hours +":00 "+ amPm;
+    
+    const date1 = new Date(selectedDate);
+    const date2 = new Date(curr_date);
+
+    if(date1 < date2){
+
+            setTimeSlots([]);
+
+    }else if(date1 > date2){
+
+            const temp_times = [];
+            Object.keys(timeOptions).forEach((time)=>{
+                  temp_times.push(time);
+            });
+            setTimeSlots(temp_times);
+        
+    }else{
+            setTimeSlots([]);
+            const temp_times = [];
+            Object.keys(timeOptions).forEach((time)=>{
+                if(timeOptions[hours] < timeOptions[time]){
+                    temp_times.push(time);
+                }
+            });
+            setTimeSlots(temp_times);
+    }
+    
+  },[selectedDate,selectedTime]);
 
 
 
@@ -77,8 +140,6 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
   // const toggleAppointment = () => {
   //   setShowAppointment(!showAppointment);
   // };
-
-  const timeOptions = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
 
   return (
     <div className=''>
@@ -104,7 +165,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
                         Time:
                         <select className = 'my-2 mx-5 text-black' value={selectedTime} onChange={(event) => setSelectedTime(event.target.value)} required>
                             <option value="">--Select a Time--</option>
-                            {timeOptions.map((time) => (
+                            {TimeSlots.map((time) => (
                             <option key={time} value={time}>
                                 {time}
                             </option>
@@ -113,13 +174,6 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
                         </label>
                         <button type="submit" className=" px-2 py-2 mx-2 my-4">Book Appointment</button>
                     </form>
-                    {/* <ul>
-                        {appointments.map((appointment, index) => (
-                        <li key={index}>
-                            <span>{appointment.date}</span> at <span>{appointment.time}</span>
-                        </li>
-                        ))}
-                    </ul> */}
                 
         </div>}
         </div>
@@ -149,7 +203,7 @@ const Appointment = () => {
   // };
 
   useEffect(() => {
-
+    document.documentElement.classList.add('dark');
     Axios.get('http://localhost:5000/protected', { withCredentials: true }).then((response)=>{
         setUserId(response.data.id);
         console.log(response.data.id);
@@ -172,20 +226,11 @@ const Appointment = () => {
         navigate('/login');
     });
 
-    // fetch('http://localhost:5000/protected', {
-    //     method: 'GET',
-    //     credentials: 'include'
-    // }).then(data => {
-    //     setUserId(data.id);
-    //     console.log(data.id);
-    // }).catch(error => {
-    //     console.log(error);
-    //     navigate('/login');
-    // });
     console.log(diseases);
     if(diseases != undefined){
         const disease_data = {disease: diseases};
         Axios.post('http://localhost:5000/get_doctors', disease_data).then((response)=>{
+            console.log(response.data.doctors[0]['department']);
             setDept(response.data.doctors[0]['department']);  
             setDoctors(response.data.doctors);
         });
@@ -199,20 +244,22 @@ const Appointment = () => {
 }, []);
 
   return (
-    <div className="bg-gradient-to-r from-green-200 via-green-300 to-blue-500 min-h-full">
+    <div className="bg-violet-400 min-h-full">
       <Nav/>  
-      {(diseases!== undefined) &&
-        <div className="max-auto text-center py-10">
-            <h2 className="text-4xl font-bold uppercase">We predict that you may have<div className="text-pink-500 text-7xl"> {diseases}!</div></h2>
-        </div>
-      }
-      {(diseases === undefined) &&
-        <div className="max-auto text-center py-10">
-            <h2 className="text-4xl font-bold uppercase">Oh! Your symptoms didn't match any particular disease! Consult general medicine doctors</h2>
-        </div>
-      }
-      <div className="max-auto text-center py-10">
-          <h2 className="text-2xl font-semibold uppercase">Recommmended Department:  <strong className="text-black text-2xl"> {dept}</strong></h2>
+      <div className="content-center rounded-lg bg-slate-100 duration-300 p-4 py-2 shadow-2xl mt-3 bg-opacity-60 mx-20">
+          {(diseases!== undefined) &&
+            <div className="max-auto text-center py-10">
+                <h2 className="text-4xl text-slate-800 font-bold uppercase tracking-wider">We predict that you may have<div className="text-pink-500 text-7xl"> {diseases}!</div></h2>
+            </div>
+          }
+          {(diseases === undefined) &&
+            <div className="max-auto text-center py-10 text-white">
+                <h2 className="text-3xl text-slate-800 font-bold uppercase tracking-wider">Oh! Your symptoms didn't match any particular disease! Consult general medicine doctors</h2>
+            </div>
+          }
+      </div>
+      <div className="max-auto text-center pt-10">
+          <h2 className="text-2xl font-semibold uppercase tracking-wider">Recommmended Department:  <strong className="text-black text-2xl"> {dept}</strong></h2>
       </div>
       <div className="grid grid-cols-2">
           {doctors.map((doctor, index) => (

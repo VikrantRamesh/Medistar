@@ -7,25 +7,33 @@ import Nav from './nav.jsx';
 import gen from "../Images/general_docimg.jpg";
 
 const Doctor = ({ id, fname, lname, qualification, department, appointments, setAppointments ,patId, userId, p_fname}) => {
-  
+  const [currentTime, setCurrentTime] = useState(new Date());
   const [selectedDate, setSelectedDate] = useState('');
   const [selectedTime, setSelectedTime] = useState('');
   const [disease, setDisease] = useState('');
   const [imageUrl, setImageUrl] = useState([]);
+  const [TimeSlots, setTimeSlots] = useState(['10:00 AM','11:00 AM', '12:00 PM', '01:00 PM','02:00 PM', '03:00 PM', '04:00 PM','05:00 PM']);
 
   const handleAppointment = (event) => {
     event.preventDefault();
     if (selectedDate && selectedTime) {
 
       const appointment_details = {date : selectedDate, time:selectedTime,  doc_id: selectedDoctorId, pfname: p_fname, pid: patId, doc_name: fname, department:department};
-
-      Axios.post('http://localhost:5000/appointment', appointment_details).then((response) => {
-        swal({
-          title:"Appointment Confirmed!",
-          icon: "success",
+      Axios.post('http://localhost:5000/get_doctor_appointments', appointment_details).then((response) => {
+        if(response.data.count>=3){
+            swal({
+              title:"Slot Full!",
+              icon: "warning",
+            });
+        }else{
+          Axios.post('http://localhost:5000/appointment', appointment_details).then((response) => {
+            swal({
+              title:"Appointment Confirmed!",
+              icon: "success",
+            });
         });
+        }
       });
-
       const newAppointment = { date: selectedDate, time: selectedTime };
       console.log("Appointment scheduled for Doctor ID: " + selectedDoctorId);
       console.log("Date: " + selectedDate);
@@ -72,7 +80,51 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
   //   setShowAppointment(!showAppointment);
   // };
 
-  const timeOptions = ['10:00 AM', '11:00 AM', '12:00 PM', '1:00 PM', '2:00 PM', '3:00 PM', '4:00 PM', '5:00 PM'];
+  const timeOptions = {'10:00 AM':0, '11:00 AM':1, '12:00 PM':2, '01:00 PM':3, '02:00 PM':4, '03:00 PM':5, '04:00 PM':6, '05:00 PM':7};
+
+
+  useEffect(() =>{
+
+    const currentYear = currentTime.getFullYear();
+    let currentMonth = currentTime.getMonth()+1;
+    currentMonth = ("0" + currentMonth).slice(-2);
+    const currentDay = currentTime.getDate();
+
+    const curr_date =  currentYear + "-" + currentMonth + "-" + currentDay;
+
+    const railwayHours = currentTime.getHours();
+    let hours = railwayHours > 12 ? railwayHours - 12 : railwayHours;
+    hours = ("0" + hours).slice(-2);
+    const amPm = railwayHours >= 12 ? "PM" : "AM";
+    hours = hours +":00 "+ amPm;
+    
+    const date1 = new Date(selectedDate);
+    const date2 = new Date(curr_date);
+
+    if(date1 < date2){
+
+            setTimeSlots([]);
+
+    }else if(date1 > date2){
+
+            const temp_times = [];
+            Object.keys(timeOptions).forEach((time)=>{
+                  temp_times.push(time);
+            });
+            setTimeSlots(temp_times);
+        
+    }else{
+            setTimeSlots([]);
+            const temp_times = [];
+            Object.keys(timeOptions).forEach((time)=>{
+                if(timeOptions[hours] < timeOptions[time]){
+                    temp_times.push(time);
+                }
+            });
+            setTimeSlots(temp_times);
+    }
+    
+  },[selectedDate,selectedTime]);
 
   return (
     <div className="max-w-8xl mx-2">
@@ -100,7 +152,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
                         Time:
                         <select className = 'my-2 mx-5 text-black' value={selectedTime} onChange={(event) => setSelectedTime(event.target.value)} required>
                             <option value="">--Select a Time--</option>
-                            {timeOptions.map((time) => (
+                            {TimeSlots.map((time) => (
                             <option key={time} value={time}>
                                 {time}
                             </option>
@@ -142,7 +194,7 @@ const Appointment = () => {
   // };
 
   useEffect(() => {
-
+    document.documentElement.classList.add('dark');
     Axios.get('http://localhost:5000/protected', { withCredentials: true }).then((response)=>{
         setUserId(response.data.id);
         console.log(response.data.id);
@@ -164,24 +216,30 @@ const Appointment = () => {
         console.log(error);
         navigate('/login');
     });
-    
-    let docs = [];
 
-    options.forEach(option =>{
-        const dept_data = {dept: option.label};
-        Axios.post('http://localhost:5000/get_doctors_dept', dept_data).then((response)=>{
-            if(response.data.doctors.length > 0){
-                docs = [...docs, ...response.data.doctors];
-                console.log(docs);
-                setDoctors(docs);
-            }
-        });
-    });
+
+    get_all_docs();
 
   }, []);
 
 
+  const get_all_docs = () =>{
+    let docs = [];
+    options.forEach(option =>{
+      const dept_data = {dept: option.label};
+      Axios.post('http://localhost:5000/get_doctors_dept', dept_data).then((response)=>{
+          if(response.data.doctors.length > 0){
+              docs = [...docs, ...response.data.doctors];
+              console.log(docs);
+              setDoctors(docs);
+          }
+      });
+  });
+  }
+
+
     const options = [
+        { label: 'All Departments', value: 'All Departments' },
         { label: 'General', value: 'general' },
         { label: 'Cardiology', value: 'cardiology' },
         { label: 'Radiology', value: 'radiology' },
@@ -189,7 +247,7 @@ const Appointment = () => {
         { label: 'Nephrology', value: 'nephrology' },
         { label: 'Medicine', value: 'medicine' },
         { label: 'Pediatrics', value: 'pediatrics' },
-        { label: 'Obstetrics and gynaecology', value: 'obstetrics_and_gynaecology' }
+        { label: 'Obstetrics and gynaecology', value: 'Obstetrics and gynaecology' }
     ];
 
       
@@ -197,13 +255,18 @@ const Appointment = () => {
 
 
     const fetch_doc = (e) =>{
-        setDept(e.target.value);
-        console.log(dept); 
-        const dept_data = {dept: e.target.value};
-        Axios.post('http://localhost:5000/get_doctors_dept', dept_data).then((response)=>{         
-            setDoctors(response.data.doctors);
-        });
-        
+
+        if(e.target.value == 'All Departments'){
+          get_all_docs();
+        }else{
+
+            setDept(e.target.value);
+            console.log(dept); 
+            const dept_data = {dept: e.target.value};
+            Axios.post('http://localhost:5000/get_doctors_dept', dept_data).then((response)=>{         
+                setDoctors(response.data.doctors);
+            });
+        }
     }
 
   return (
@@ -214,7 +277,6 @@ const Appointment = () => {
       </div>
       <div className="mx-auto max-w-7xl">
         <select id="department" name="department" value={dept} onChange={fetch_doc} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-500 dark:border-gray-400 dark:placeholder-gray-200 dark:text-white dark:focus:ring-blue-300 dark:focus:border-blue-500 mx-auto max-w-4xl">
-            <option value="">Select department</option>
             {options.map(option => (
             <option key={option.value} value={option.value}>{option.label}</option>
             ))}
