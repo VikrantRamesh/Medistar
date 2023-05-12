@@ -32,7 +32,7 @@ CREATE TABLE `appointment` (
   `date` varchar(255) NOT NULL,
   `time` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=78 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `appointment` (
 
 LOCK TABLES `appointment` WRITE;
 /*!40000 ALTER TABLE `appointment` DISABLE KEYS */;
-INSERT INTO `appointment` VALUES (17,1009,51,'Vikrant','General','Suresh','2023-05-17','1:00 PM'),(21,1009,51,'Vikrant','General','Suresh','2023-05-17','1:00 PM'),(22,1009,54,'Vikrant','Cardiology','Ragavi','2023-05-17','11:00 AM'),(24,1009,51,'Vikrant','General','Suresh','2023-05-11','3:00 PM'),(26,1016,51,'Varsha','General','Suresh','2023-05-11','10:00 AM'),(27,1016,52,'Varsha','Nephrology','Karnan','2023-05-15','12:00 PM');
+INSERT INTO `appointment` VALUES (22,1009,54,'Vikrant','Cardiology','Ragavi','2023-05-12','11:00 AM'),(27,1016,52,'Varsha','Nephrology','Karnan','2023-05-15','12:00 PM'),(30,1009,56,'Vikrant','Radiology','Rohit','2023-05-17','03:00 PM'),(46,1009,57,'Vikrant','Pediatrics','Rajini','2023-05-10','5:00 PM'),(49,1011,55,'Krishna','Medicine','Kanishkaa','2023-05-10','12:00 PM'),(50,1014,54,'Sudeep','Cardiology','Ragavi','2023-05-10','01:00 PM'),(52,1015,52,'Hemanth','Nephrology','Karnan','2023-05-10','05:00 PM'),(56,1009,50,'Vikrant','General','Ramesh','2023-05-12','10:00 AM'),(57,1009,54,'Vikrant','Cardiology','Ragavi','2023-05-10','05:00 PM'),(65,1010,51,'Tharun','General','Suresh','2023-05-17','01:00 PM'),(66,1010,51,'Tharun','General','Suresh','2023-05-12','01:00 PM'),(72,1009,51,'Vikrant','General','Suresh','2023-05-12','01:00 PM'),(73,1009,51,'Vikrant','General','Suresh','2023-05-17','02:00 PM'),(74,1009,51,'Vikrant','General','Suresh','2023-05-17','02:00 PM'),(75,1009,51,'Vikrant','General','Suresh','2023-05-17','02:00 PM'),(76,1009,55,'Vikrant','Medicine','Kanishkaa','2023-05-18','11:00 AM'),(77,1009,51,'Vikrant','General','Suresh','2023-05-12','11:00 AM');
 /*!40000 ALTER TABLE `appointment` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-06 22:21:24
+-- Dump completed on 2023-05-12 18:44:33

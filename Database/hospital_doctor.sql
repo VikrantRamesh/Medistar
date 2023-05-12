@@ -36,7 +36,7 @@ CREATE TABLE `doctor` (
   `Qualification` varchar(255) NOT NULL,
   `age` int DEFAULT NULL,
   PRIMARY KEY (`doc_id`,`user_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=55 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -45,7 +45,7 @@ CREATE TABLE `doctor` (
 
 LOCK TABLES `doctor` WRITE;
 /*!40000 ALTER TABLE `doctor` DISABLE KEYS */;
-INSERT INTO `doctor` VALUES (50,20230504122903,'Ramesh','Kumar','Ramesh@hospital.com','2023-05-24','Male','5th Block, Mogappair, Chennai-400023','9840941701','General','MS',30),(51,20230504123009,'Suresh','Kumar','Suresh@hospital.com','2023-05-24','Male','4th block, Mogappair, Chennai - 600032','7305302490','General','MD',56),(52,20230506055601,'Karnan','Kaviyalagan','Karnan@hospital.com','1992-06-16','Male','4th block, Mogappair, Chennai - 600032','9048372647','Nephrology','MBBS',31),(53,20230506060657,'Nithya','Shree','nithya@hospital.com','1992-01-22','Female','5th Block, Mogappair, Chennai-400023','9565432432','Pathology','MD',31),(54,20230506060821,'Ragavi','Ramesh','Ragavi@hospital.com','1987-07-14','Female','14th Block, Raipet, Chennai-600032','9343545435','Cardiology','PHD',36);
+INSERT INTO `doctor` VALUES (50,20230504122903,'Ramesh','Kumar','Ramesh@hospital.com','2023-05-24','Male','5th Block, Mogappair, Chennai-400023','9840941701','General','MS',30),(51,20230504123009,'Suresh','Kumar','Suresh@hospital.com','2023-05-24','Male','4th block, Mogappair, Chennai - 600032','7305302490','General','MD',56),(52,20230506055601,'Karnan','Kaviyalagan','Karnan@hospital.com','1992-06-16','Male','4th block, Mogappair, Chennai - 600032','9048372647','Nephrology','MBBS',31),(53,20230506060657,'Nithya','Shree','nithya@hospital.com','1992-01-22','Female','5th Block, Mogappair, Chennai-400023','9565432432','Pathology','MD',31),(54,20230506060821,'Ragavi','Ramesh','Ragavi@hospital.com','1987-07-14','Female','14th Block, Raipet, Chennai-600032','9343545435','Cardiology','PHD',36),(55,20230508122544,'Kanishkaa','Ramesh','kani@doctor.com','2015-04-24','Female','6/9 - 4th Street, Valasaravakkam, Chennai-600087','9840750878','Medicine','MBBS',8),(56,20230508122645,'Rohit','T','Rohit@doc.com','2004-04-01','Female','11 th block, Chennai-600045','9847366492','Radiology','PHD',19),(57,20230508122819,'Rajini','Murugan','Rajini@doc.com','1990-02-06','Male','1st Block, Chennai, Tamil Nadu','9794759372','Pediatrics','MD',33),(58,20230508122937,'Kumar','Mahendaren','Kumar@doc.com','1977-06-08','Male','9th Block, Vadapalani, Chennai','9894759372','Obstetrics and gynaecology','MD',46);
 /*!40000 ALTER TABLE `doctor` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -58,4 +58,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2023-05-06 22:21:25
+-- Dump completed on 2023-05-12 18:44:34
