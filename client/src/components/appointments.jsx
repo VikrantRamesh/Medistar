@@ -21,6 +21,8 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
     return () => clearInterval(interval);
   }, []);
 
+  const navigate = useNavigate();
+
 
   const handleAppointment = (event) => {
     event.preventDefault();
@@ -40,6 +42,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
               title:"Appointment Confirmed!",
               icon: "success",
             });
+            navigate("/patdash");
         });
         }
       });
@@ -56,7 +59,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
   };
 
 
-  const timeOptions = {'10:00 AM':0, '11:00 AM':1, '12:00 PM':2, '01:00 PM':3, '02:00 PM':4, '03:00 PM':5, '04:00 PM':6, '05:00 PM':7};
+  const timeOptions = {'10:00 AM':0, '11:00 AM':1, '12:00 PM':2, '01:00 PM':3, '02:00 PM':4, '03:00 PM':5, '04:00 PM':6, '05:00 PM':7, '09:00 AM':-1};
 
   const handleDoctorClick = (doctorId) => {
     // If the clicked doctor is already selected, deselect it
@@ -118,6 +121,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
             setTimeSlots([]);
             const temp_times = [];
             Object.keys(timeOptions).forEach((time)=>{
+                console.log(hours, timeOptions[time] );
                 if(timeOptions[hours] < timeOptions[time]){
                     temp_times.push(time);
                 }
@@ -155,8 +159,8 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
                           <p><strong className = "font-bold text-2xl">Department:</strong> {department}</p>
                       </div>
                     </div>
-                    {selectedDoctorId === id && <div className=" bg-slate-950 mx-auto text-lg mt-4 px-4 py-4 rounded-lg">
-                    <form onSubmit={handleAppointment}>
+                    {selectedDoctorId === id && <div className=" bg-indigo-900 mx-auto text-lg mt-4 px-4 py-4 rounded-lg text-left">
+                    <form onSubmit={handleAppointment}>                       
                         <label className="text-white mx-2">
                         Date:
                         <input className = "my-2 mx-5 text-black" type="date" value={selectedDate} onChange={(event) => setSelectedDate(event.target.value)} required/>

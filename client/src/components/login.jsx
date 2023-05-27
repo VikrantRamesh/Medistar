@@ -3,7 +3,7 @@ import '../styles/signup.css';
 import Axios from "axios";
 import swal from 'sweetalert';
 import {useNavigate, Link} from 'react-router-dom';
-import InteractiveBackground from "./InteractBg";
+import InteractiveBackground from "./Interactive Backgounds/InteractBg";
 
 const Login_page = () => {
   const [userName, setUserName] = useState('');
@@ -27,6 +27,8 @@ const Login_page = () => {
                     navigate('/docdash');
                 }else if(response.data.class === 'admin'){
                     navigate('/admindash');
+                }else if(response.data.class === 'patient'){
+                  navigate('/patdash');
                 }else{
                   navigate('/');
                 }

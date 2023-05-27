@@ -191,7 +191,7 @@ const DoctorDashboard = () => {
     
 
   return (
-    <div className="bg-slate-300 dark:bg-slate-900 min-h-full">
+    <div className="bg-slate-300 dark:bg-slate-900 min-h-full transition-all duration-1000">
                 <Nav onDarkModeChange={handleDarkModeChange} ></Nav>
                 <div className="grid grid-cols-6 gap-4">
                     <div className={`bg-slate-50 shadow-xl dark:bg-slate-700 ml-6 mr-6 lg:mr-0 px-12 py-10 rounded-xl row-span-3 col-span-6 lg:col-span-2 min-h-full  overflow-auto scrollbar-thin scrollbar-thumb-blue-700 scrollbar-track-blue-300 transition-all duration-1000`}>

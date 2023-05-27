@@ -66,7 +66,7 @@ function AgeChart({ageData, theme}) {
   return (
     <div>
       <div className="h-48 w-96 mx-auto mb-16 mt-12">
-      <h1 className="text-white font-medium text-center text-sm mt-3">AGE GROUPS</h1>
+      <h1 className="dark:text-white font-medium text-center text-sm mt-3">AGE GROUPS</h1>
         <Line data={data} options={options} height={300} width={400}/>
         
       </div>

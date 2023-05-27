@@ -3,7 +3,7 @@ import '../styles/signup.css';
 import Axios from "axios";
 import swal from 'sweetalert';
 import {useNavigate, Link} from 'react-router-dom';
-import InteractiveBackground from "./InteractBg";
+import InteractiveBackground from "./Interactive Backgounds/InteractBg";
 
 
 const Signup_page = () => {

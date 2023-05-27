@@ -3,7 +3,7 @@ import '../styles/signup.css';
 import Axios from "axios";
 import swal from 'sweetalert';
 import {useNavigate, Link } from 'react-router-dom';
-import Nav from './nav.jsx';
+import Nav from './patient_components/patNav.jsx';
 
 
 import Select from "react-select";
@@ -15,6 +15,7 @@ function AppointmentForm() {
   const [options, setOptions] = useState([]);
   const [sym_di, setSym_di] = useState([]);
   const [isChecked, setIsChecked] = useState(false);
+  const[theme, setTheme] = useState(localStorage.theme);
 
   const navigate = useNavigate();
 
@@ -63,6 +64,16 @@ function AppointmentForm() {
   }, []);
 
 
+  
+  const handleDarkModeChange = (darkMode) => {
+    setTheme(darkMode);
+    if (darkMode == 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  };
+
 
   const handleSubmit = async (event) => {
     console.log("before", isChecked);
@@ -89,7 +100,7 @@ function AppointmentForm() {
 
     <div className='bg-violet-400  min-h-full'>
             
-        <Nav />
+        <Nav onDarkModeChange={handleDarkModeChange} />
 
         <div className="signup-container flex-col text-xl" >
             <form onSubmit={handleSubmit}>

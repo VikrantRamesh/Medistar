@@ -3,7 +3,7 @@ import '../styles/signup.css';
 import Axios from "axios";
 import swal from 'sweetalert';
 import {useNavigate, useLocation } from 'react-router-dom';
-import Nav from './nav.jsx';
+import Nav from './patient_components/patNav.jsx';
 import gen from "../Images/general_docimg.jpg";
 
 const Doctor = ({ id, fname, lname, qualification, department, appointments, setAppointments ,patId, userId, p_fname}) => {
@@ -13,6 +13,8 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
   const [disease, setDisease] = useState('');
   const [imageUrl, setImageUrl] = useState([]);
   const [TimeSlots, setTimeSlots] = useState(['10:00 AM','11:00 AM', '12:00 PM', '01:00 PM','02:00 PM', '03:00 PM', '04:00 PM','05:00 PM']);
+
+  const navigate = useNavigate();
 
   const handleAppointment = (event) => {
     event.preventDefault();
@@ -31,6 +33,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
               title:"Appointment Confirmed!",
               icon: "success",
             });
+            navigate("/patdash");
         });
         }
       });
@@ -80,7 +83,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
   //   setShowAppointment(!showAppointment);
   // };
 
-  const timeOptions = {'10:00 AM':0, '11:00 AM':1, '12:00 PM':2, '01:00 PM':3, '02:00 PM':4, '03:00 PM':5, '04:00 PM':6, '05:00 PM':7};
+  const timeOptions = {'10:00 AM':0, '11:00 AM':1, '12:00 PM':2, '01:00 PM':3, '02:00 PM':4, '03:00 PM':5, '04:00 PM':6, '05:00 PM':7, '09:00 AM':-1};
 
 
   useEffect(() =>{
@@ -142,7 +145,7 @@ const Doctor = ({ id, fname, lname, qualification, department, appointments, set
                       </div>
                     </div>
 
-                    {selectedDoctorId === id && <div className=" bg-slate-950 mx-auto text-lg mt-4 px-4 py-4 rounded-lg">
+                    {selectedDoctorId === id && <div className="bg-indigo-900 mx-auto text-lg mt-4 px-4 py-4 rounded-lg">
                     <form onSubmit={handleAppointment}>
                         <label className="text-white mx-2">
                         Date:
@@ -181,6 +184,7 @@ const Appointment = () => {
   const [userId, setUserId] = useState('');
   const [patId, setPatId] = useState('');
   const [pfname, setPfname] = useState('');
+  const[theme, setTheme] = useState(localStorage.theme);
   const [dept, setDept] = useState('General');
 
 
@@ -237,6 +241,16 @@ const Appointment = () => {
   });
   }
 
+  
+  const handleDarkModeChange = (darkMode) => {
+    setTheme(darkMode);
+    if (darkMode == 'dark') {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
+  };
+
 
     const options = [
         { label: 'All Departments', value: 'All Departments' },
@@ -271,7 +285,7 @@ const Appointment = () => {
 
   return (
     <div className="bg-[conic-gradient(at_bottom_left,_var(--tw-gradient-stops))] from-slate-900 via-purple-900 to-slate-900 min-h-full">
-      <Nav/>  
+      <Nav onDarkModeChange={handleDarkModeChange} />  
       <div className="max-auto text-center py-10">
           <h2 className="text-3xl font-black uppercase text-white">Choose A Doc!</h2>
       </div>

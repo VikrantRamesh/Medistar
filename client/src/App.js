@@ -9,6 +9,7 @@ import AdminDash from "./components/admindash.jsx";
 import GeneralAppointment from "./components/General_appointments.jsx";
 import React, { Component } from 'react';
 import ReactDOM from 'react-dom';
+import PatDash from './components/patientProfile';
 import { BrowserRouter, Route, Routes} from 'react-router-dom';
 
 
@@ -25,6 +26,7 @@ function App() {
                     <Route exact path='/admindash' element={< AdminDash />}></Route>
                     {/* <Route exact path='/logout' element={< Appointment />}></Route> */}
                     <Route exact path='/docdash' element={< Docdash />}></Route>
+                    <Route exact path='/patdash' element={< PatDash />}></Route>
                  </Routes>
           </BrowserRouter>
   );
