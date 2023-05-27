@@ -153,7 +153,7 @@ app.post("/get_patient_id", async (req, res) =>{
 
         if(results){
             if (results.length > 0){
-              //console.log(results[0].pid);
+
               //const token = jwt.sign({ pid: results[0].pid }, "YOUR_SECRET_KEY");
               //return res
                 //.cookie("patient_token", token)
@@ -362,7 +362,6 @@ app.post("/get_appointments", async (req, res) =>{
             Appointments.push(app);
         });
         //console.log(doctors);
-        console.log(Appointments);
         res.json({appointments: Appointments});
     });
 });
@@ -397,16 +396,16 @@ app.post("/get_doctor_appointments", async (req, res) =>{
 
     con.query(`
     SELECT COUNT(*) as app_count
-    FROM appointment 
+    FROM appointment
     WHERE doc_id = ?
-    AND time = ? 
+    AND time = ?
     AND date = ?;
     `,[req.body.doc_id,req.body.time,req.body.date], function(error , results , fields){
         if(results){
             if (results.length > 0){
                 res.json({count: results[0].app_count});
             }
-        }       
+        }
     });
 });
 
@@ -437,7 +436,6 @@ app.post("/get_doctors_dept", async (req, res) =>{
 });
 
 app.post('/get_images', (req, res) => {
-
         con.query(`SELECT img FROM images WHERE id = ?`, [req.body.user_id], function(error , results , fields){
             if(results.length > 0){
                 res.set('Content-Type', 'image/jpg')
@@ -451,7 +449,6 @@ app.post('/get_images', (req, res) => {
 
 
 app.post("/detect_disease", async(req, res)=>{
-    //console.log(req.body.symptoms);
     let query = `SELECT diseases.name FROM diseases
                 JOIN symptoms_diseases ON diseases.disease_id = symptoms_diseases.disease_id
                 JOIN symptoms ON symptoms_diseases.symptom_id = symptoms.symptom_id
@@ -468,15 +465,13 @@ app.post("/detect_disease", async(req, res)=>{
                 disease.push(row.name)
             });
             const die = disease[0];
-            console.log(`Possible diseases: ${disease}`);
+
             res.cookie("disease",die);
 
-            //console.log("cookie set",res.cookies);
 
             res.json({diseases:disease});
         } else {
             res.cookie("disease",[]);
-            console.log('No matching diseases found.');
             res.json({diseases:[]});
         }
         });
@@ -485,7 +480,6 @@ app.post("/detect_disease", async(req, res)=>{
 
 
 app.post("/appointment", async(req, res)=>{
-    //console.log(req.body.symptoms);
     let query = "INSERT INTO `appointment`(`pid`, `doc_id`,`patient_name`,`department`,`doctor_name`,`date`,`time`) VALUES (" +
     req.body.pid +
     "," +
@@ -527,7 +521,6 @@ app.post("/insert_prescription", async(req, res)=>{
     "','" +
     req.body.disease +
     "')";
-    console.log(query);
     con.query(query, (err, results) => {
         con.query("DELETE FROM `appointment` where id = ?", [req.body.appno], (err, results)=>{
             res.send();
@@ -544,12 +537,10 @@ app.post("/insert_prescription", async(req, res)=>{
 // ---ADMIN DASHBOARD QUERIES---
 
 app.post("/get_website_stats", async (req, res) =>{
-    //console.log(req.body.disease);
     con.query('SELECT count(*) as cnt from users u group by user_class order by user_class', function(error , results , fields){
-        
+
         if(results){
             if (results.length > 0){
-                //console.log(doctors);
                 res.json({admins: results[0]["cnt"],
                         doctors: results[1]["cnt"],
                         patients: results[2]["cnt"],
@@ -560,9 +551,8 @@ app.post("/get_website_stats", async (req, res) =>{
 });
 
 app.post("/dept_appointment_data", async (req, res) =>{
-    //console.log(req.body.disease);
 
-    
+
     let date_ob = new Date();
     let date = ("0" + date_ob.getDate()).slice(-2);
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
@@ -585,9 +575,8 @@ app.post("/dept_appointment_data", async (req, res) =>{
 });
 
 app.post("/time_appointment_data", async (req, res) =>{
-    //console.log(req.body.disease);
 
-    
+
     let date_ob = new Date();
     let date = ("0" + date_ob.getDate()).slice(-2);
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
@@ -596,7 +585,7 @@ app.post("/time_appointment_data", async (req, res) =>{
     const app_date = year + "-" + month + "-" + date;
 
     con.query('SELECT time,count(*) as time_cnt from appointment where date = ? group by time order by time',[app_date], function(error , results , fields){
-        
+
         if(results){
             if (results.length > 0){
                 app_data = {"00:00":0, "10:00 AM":0, "11:00 AM":0,"12:00 PM":0,"01:00 PM":0,"02:00 PM":0,"03:00 PM":0,"04:00 PM":0,"05:00 PM":0}
@@ -604,7 +593,7 @@ app.post("/time_appointment_data", async (req, res) =>{
                     app_data[row.time] = row.time_cnt;
                 });
             }
-        }       
+        }
         return res.json(app_data);
     });
 });
@@ -618,13 +607,13 @@ app.post("/gender_data", async (req, res) =>{
         let app_data = {"Male":0, "Female":0, "Other":0};
         if(results){
             if (results.length > 0){
-                
+
                 results.forEach((row)=>{
                     total+=row.gender_cnt;
                     app_data[row.gender] = row.gender_cnt;
                 });
             }
-        }       
+        }
         app_data["total"] = total;
         return res.json(app_data);
     });
@@ -632,52 +621,48 @@ app.post("/gender_data", async (req, res) =>{
 
 
 app.post("/age_data", async (req, res) =>{
-    //console.log(req.body.disease);
     con.query(`
-    SELECT 
-        CASE 
-            WHEN age < 10 THEN '0-10' 
-            WHEN age BETWEEN 10 AND 20 THEN '10-20' 
-            WHEN age BETWEEN 20 AND 30 THEN '20-30' 
-            WHEN age BETWEEN 30 AND 40 THEN '30-40' 
-            WHEN age BETWEEN 40 AND 50 THEN '40-50' 
-            WHEN age BETWEEN 50 AND 60 THEN '50-60' 
-            WHEN age BETWEEN 60 AND 70 THEN '60-70' 
-            WHEN age BETWEEN 70 AND 80 THEN '70-80' 
-            WHEN age BETWEEN 80 AND 90 THEN '80-90' 
-            WHEN age BETWEEN 90 AND 100 THEN '90-100' 
-            
-            ELSE 'Over 100' 
-        END AS age_group, 
-        COUNT(*) AS num_people 
-        FROM patient 
+    SELECT
+        CASE
+            WHEN age < 10 THEN '0-10'
+            WHEN age BETWEEN 10 AND 20 THEN '10-20'
+            WHEN age BETWEEN 20 AND 30 THEN '20-30'
+            WHEN age BETWEEN 30 AND 40 THEN '30-40'
+            WHEN age BETWEEN 40 AND 50 THEN '40-50'
+            WHEN age BETWEEN 50 AND 60 THEN '50-60'
+            WHEN age BETWEEN 60 AND 70 THEN '60-70'
+            WHEN age BETWEEN 70 AND 80 THEN '70-80'
+            WHEN age BETWEEN 80 AND 90 THEN '80-90'
+            WHEN age BETWEEN 90 AND 100 THEN '90-100'
+
+            ELSE 'Over 100'
+        END AS age_group,
+        COUNT(*) AS num_people
+        FROM patient
         GROUP BY age_group;
     `, function(error , results , fields){
         let app_data = {"0-10":0, "10-20":0, "20-30":0, "30-40":0,"40-50":0, "50-60":0,"60-70":0, "70-80":0,"80-90":0, "90-100":0,"100+":0};
         if(results){
             if (results.length > 0){
-                
+
                 results.forEach((row)=>{
                     app_data[row.age_group] = row.num_people;
                 });
             }
-        }       
+        }
         return res.json(app_data);
     });
 });
 
 
 app.post("/top_docs", async (req, res) =>{
-    //console.log(req.body.disease);
 
-    
     let date_ob = new Date();
     let date = ("0" + date_ob.getDate()).slice(-2);
     let month = ("0" + (date_ob.getMonth() + 1)).slice(-2);
     let year = date_ob.getFullYear();
 
     const app_date = year + "-" + month + "-" + date;
-
     con.query(`
         SELECT d.doc_id , d.first_name, d.last_name, d.department, d.qualification, COUNT(*) AS num_appointments
         FROM appointment p
@@ -687,7 +672,7 @@ app.post("/top_docs", async (req, res) =>{
         ORDER BY num_appointments DESC
         LIMIT 3;
     `,[app_date], function(error , results , fields){
-        console.log(results);
+
         if(results){
             if (results.length > 0){
                 const doc = [];
@@ -708,16 +693,14 @@ app.post("/top_docs", async (req, res) =>{
                     doctors["num_appointments"] = (num_appointments);
                     doc.push(doctors);
                 });
-                //console.log(doctors);
                 res.json({doctors: doc});
             }
-        }       
+        }
     });
 });
 
 
 app.post("/top_diseases", async (req, res) =>{
-    //console.log(req.body.disease);    
 
     con.query(`
     select disease,COUNT(*) AS total_cases from prescriptions group by disease order by total_cases desc LIMIT 5;
@@ -731,11 +714,81 @@ app.post("/top_diseases", async (req, res) =>{
 
                     diseases[disease] =(total_cases);
                 });
-                //console.log(doctors);
-                
+
                 res.json({diseases: diseases});
             }
-        }       
+        }
+    });
+});
+
+app.post("/get_patient_details", (req, res)=>{
+    con.query("SELECT * FROM patient where user_id = ?",[req.body.user_id], (err, results) => {
+        if(err){
+            console.log(err);
+        }else{
+            if(results){
+                res.json({
+                    pid:results[0].pid,
+                    fname:results[0].p_fname,
+                    lname:results[0].p_lname,
+                    gender:results[0].gender,
+                    dob:results[0].Dob,
+                    address:results[0].address,
+                    phone:results[0].phone,
+                    age:results[0].age,
+                });
+            }
+        }
+    });
+});
+
+
+app.post("/get_patient_appointment", (req, res)=>{
+    con.query("SELECT appointment.id,appointment.doc_id, appointment.date,appointment.department, appointment.time, doctor.first_name FROM appointment JOIN doctor ON appointment.doc_id = doctor.doc_id WHERE appointment.date > '2023-05-13' AND appointment.pid = (select pid from patient where user_id= ?) ;",[req.body.user_id], (err, results) => {
+        if(err){
+            console.log(err);
+        }else{
+            if(results){
+                const Appointments = []
+        results.forEach((row) => {
+            
+            const app = {}
+            app["appid"] =( row.id);
+            app["docid"] =( row.doc_id);
+            app["name"] = ( row.first_name);
+            app["date"] =( row.date);
+            app["time"] = ( row.time);
+            app["dept"] = ( row.department);
+            Appointments.push(app);
+        });
+        res.json({appoinment_details: Appointments});
+            }
+
+        }
+
+    });
+});
+
+app.post("/get_past_appointment", (req, res)=>{
+    con.query("SELECT prescriptions.doc_name,prescriptions.disease,prescriptions.prescription, prescriptions.date FROM hospital.prescriptions where pid = (select pid from patient where user_id= ?) ;",[req.body.user_id], (err, results) => {
+        if(err){
+            console.log(err);
+        }else{
+            if(results){
+                const Past_appointments = []
+        results.forEach((row) => {
+            const app = {}
+            app["name"] = ( row.doc_name);
+            app["disease"] =( row.disease);
+            app["prescription"] = ( row.prescription);
+            app["date"] = ( row.date);
+            Past_appointments.push(app);
+        });
+        res.json({past_appoinment_details:Past_appointments});
+            }
+
+        }
+
     });
 });
 
